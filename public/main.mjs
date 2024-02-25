@@ -64,6 +64,7 @@ const updateMessages = (userId) => {
       p.appendChild(text);
       messageArea.appendChild(p);
     }
+    messageArea.scrollTop = messageArea.scrollHeight;
   }
   else {
     setRead(userId, false);
