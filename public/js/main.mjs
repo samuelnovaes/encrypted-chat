@@ -18,14 +18,14 @@ let messages = [];
 const setRead = (userId, read) => {
   const element = document.getElementById(userId);
   if (element) {
-    element.style.color = read ? 'black' : 'red';
+    element.style.color = read ? 'blue' : 'red';
   }
 };
 
 const updateUsers = async (items) => {
   const users = items.filter((user) => user.id !== id);
   messages = messages.filter((message) => users.some((user) => user.id === message.from || user.is === message.to));
-  if(!users.some((user) => user.id === userSelected?.id)) {
+  if (!users.some((user) => user.id === userSelected?.id)) {
     main.style.display = 'none';
     userSelected = null;
   }
@@ -49,26 +49,21 @@ const updateUsers = async (items) => {
 };
 
 const updateMessages = (userId) => {
-  if (userId === userSelected?.id) {
-    const userSelectedMessages = messages.filter((message) => message.to === userId || message.from === userId);
-    messageArea.innerHTML = '';
-    for (const message of userSelectedMessages) {
-      const p = document.createElement('p');
-      p.classList.add('message');
-      const username = document.createElement('strong');
-      username.innerText = `${message.from === userId ? userSelected.nick : nick}:`;
-      username.style.color = message.from === userId ? 'red' : 'blue';
-      p.appendChild(username);
-      const text = document.createElement('span');
-      text.innerText = message.message;
-      p.appendChild(text);
-      messageArea.appendChild(p);
-    }
-    messageArea.scrollTop = messageArea.scrollHeight;
+  const userSelectedMessages = messages.filter((message) => message.to === userId || message.from === userId);
+  messageArea.innerHTML = '';
+  for (const message of userSelectedMessages) {
+    const p = document.createElement('p');
+    p.classList.add('message');
+    const username = document.createElement('strong');
+    username.innerText = `${message.from === userId ? userSelected.nick : nick}:`;
+    username.style.color = message.from === userId ? 'red' : 'blue';
+    p.appendChild(username);
+    const text = document.createElement('span');
+    text.innerText = message.message;
+    p.appendChild(text);
+    messageArea.appendChild(p);
   }
-  else {
-    setRead(userId, false);
-  }
+  messageArea.scrollTop = messageArea.scrollHeight;
 };
 
 const onConnectError = (err) => {
@@ -100,7 +95,14 @@ const onMessage = async ({ from, message }) => {
     to: id,
     message: decryptedMessage
   });
-  updateMessages(from);
+  if (from === userSelected?.id) {
+    new Audio('sounds/new-message.mp3').play();
+    updateMessages(from);
+  }
+  else {
+    new Audio('sounds/notification.mp3').play();
+    setRead(from, false);
+  }
 };
 
 const sendMessage = async (e) => {
