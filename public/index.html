@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+  <div id="container">
+    <div class="usersbar">
+      <div class="header">Usuários</div>
+      <ul id="users"></ul>
+    </div>
+    <div id="main">
+      <div id="header" class="header"></div>
+      <div id="messagearea"></div>
+      <form id="inputform">
+        <input type="text" class="inputmsg" name="message">
+        <button class="btnsend" type="submit">Enviar</button>
+      </form>
+    </div>
+  </div>
+  <form id="nickform">
+    <input type="text" placeholder="Seu nome" name="nick" required>
+    <button type="submit">Entrar</button>
+  </form>
+  <script type="module" src="main.mjs"></script>
+</body>
+
+</html>
