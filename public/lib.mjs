@@ -18,34 +18,32 @@ const textToBuf = (text) => {
   return buf;
 };
 
-const keyToBase64 = async (key) => {
+const keyToText = async (key) => {
   const buf = await window.crypto.subtle.exportKey('spki', key);
-  const bin = bufToText(buf);
-  const base64 = window.btoa(bin);
-  return base64;
+  const text = bufToText(buf);
+  return text;
 };
 
-const base64ToKey = async (base64) => {
-  const bin = window.atob(base64);
-  const buf = textToBuf(bin);
+const textToKey = async (text) => {
+  const buf = textToBuf(text);
   const key = await window.crypto.subtle.importKey('spki', buf, alg, true, ['encrypt']);
   return key;
 };
 
 export const genKeys = async () => {
   const keypair = await window.crypto.subtle.generateKey(alg, true, ['encrypt', 'decrypt']);
-  const publicKey = await keyToBase64(keypair.publicKey);
+  const publicKey = await keyToText(keypair.publicKey);
   const privateKey = keypair.privateKey;
   return { publicKey, privateKey };
 };
 
 export const encrypt = async (publicKey, data) => {
-  const key = await base64ToKey(publicKey);
+  const key = await textToKey(publicKey);
   const buf = await window.crypto.subtle.encrypt(alg, key, textToBuf(data));
   return bufToText(buf);
 };
 
 export const decrypt = async (privateKey, data) => {
   const buf = await window.crypto.subtle.decrypt(alg, privateKey, textToBuf(data));
-  return bufToText(buf);
+  return bufToText(buf); 
 };
